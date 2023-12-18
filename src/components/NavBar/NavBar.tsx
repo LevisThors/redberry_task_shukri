@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { lazy } from "react";
+import Button from "../Button/Button";
+import "./NavBar.scss";
 
 const LoginModal = lazy(() => import("../LoginModal/LoginModal"));
 
@@ -14,15 +16,23 @@ const NavBar: React.FC = () => {
                 <div className="nav-item-container">
                     <img
                         src="assets/Redberry_logo.png"
-                        width={200}
-                        height={40}
+                        width={120}
+                        height={20}
                     />
                 </div>
                 <div className="nav-item-container">
-                    <span onClick={toggleLoginModal}>შესვლა</span>
+                    <Button
+                        text="შესვლა"
+                        onClick={toggleLoginModal}
+                        width="fit-content"
+                    />
                 </div>
             </nav>
-            {isLoginModalOpen && <LoginModal />}
+            {isLoginModalOpen && (
+                <Suspense>
+                    <LoginModal handleClose={toggleLoginModal} />
+                </Suspense>
+            )}
         </>
     );
 };

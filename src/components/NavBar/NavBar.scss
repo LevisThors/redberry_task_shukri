@@ -1,0 +1,13 @@
+.nav {
+    &-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+        padding-inline: 76px;
+        box-sizing: border-box;
+        height: 80px;
+        border-bottom: 1px solid #e4e3eb;
+    }
+}
