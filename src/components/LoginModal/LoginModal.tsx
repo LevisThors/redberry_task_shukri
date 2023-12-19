@@ -96,6 +96,7 @@ const login = (
             .post("https://api.blog.redberryinternship.ge/api/login", { email })
             .then(() => {
                 onSuccess(true);
+                localStorage.setItem("isAuthorized", "true");
             });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -108,6 +109,7 @@ const login = (
         } else {
             errorSetter("სცადეთ მოგვიანებით");
         }
+        localStorage.setItem("isAuthorized", "false");
     }
 };
 

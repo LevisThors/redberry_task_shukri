@@ -1,0 +1,14 @@
+.page-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-block: 65px;
+
+    h1 {
+        color: #1a1a1f;
+        font-size: 64px;
+        font-weight: 700;
+        line-height: 112.5%;
+    }
+}

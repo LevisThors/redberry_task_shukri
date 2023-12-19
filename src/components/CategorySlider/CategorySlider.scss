@@ -1,0 +1,25 @@
+.category-slider {
+    max-width: 50%;
+    overflow: hidden;
+    padding-inline: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    &-item {
+        padding: 8px 16px;
+        font-size: 12px;
+        border-radius: 50px;
+        border: 1px solid transparent;
+        cursor: pointer;
+
+        &-active {
+            border: 1px solid #000;
+        }
+    }
+}

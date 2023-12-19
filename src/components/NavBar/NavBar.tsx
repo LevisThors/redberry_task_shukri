@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { lazy } from "react";
 import Button from "../Button/Button";
 import "./NavBar.scss";
@@ -7,8 +7,24 @@ const LoginModal = lazy(() => import("../LoginModal/LoginModal"));
 
 const NavBar: React.FC = () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+    const [isAuthorized, setIsAuthorized] = useState<boolean>(
+        localStorage.getItem("isAuthorized") === "true"
+    );
+
     const toggleLoginModal = () =>
         setIsLoginModalOpen((prevState: boolean) => !prevState);
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            setIsAuthorized(localStorage.getItem("isAuthorized") === "true");
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, []);
 
     return (
         <>
@@ -22,8 +38,10 @@ const NavBar: React.FC = () => {
                 </div>
                 <div className="nav-item-container">
                     <Button
-                        text="შესვლა"
-                        onClick={toggleLoginModal}
+                        text={isAuthorized ? "დაამატე ბლოგი" : "შესვლა"}
+                        {...(isAuthorized
+                            ? { href: "/blogs/add" }
+                            : { onClick: toggleLoginModal })}
                         width="fit-content"
                     />
                 </div>

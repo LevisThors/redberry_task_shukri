@@ -7,8 +7,15 @@
     padding: 10px 20px;
     border: none;
     cursor: pointer;
+    transition: 0.2s ease-in-out;
 
     &-disabled {
         background: #e4e3eb;
+        transition: 0.2s ease-in-out;
+    }
+
+    .button:hover {
+        background: #5d37f3;
+        color: white;
     }
 }
