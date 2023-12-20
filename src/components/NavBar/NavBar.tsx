@@ -1,6 +1,7 @@
 import { Suspense, useState, useEffect } from "react";
 import { lazy } from "react";
 import Button from "../Button/Button";
+import { Link } from "react-router-dom";
 import "./NavBar.scss";
 
 const LoginModal = lazy(() => import("../LoginModal/LoginModal"));
@@ -29,14 +30,16 @@ const NavBar: React.FC = () => {
     return (
         <>
             <nav className="nav-container">
-                <div className="nav-item-container">
-                    <img
-                        src="assets/Redberry_logo.png"
-                        width={120}
-                        height={20}
-                    />
+                <div>
+                    <Link to={"/"} className="nav-logo">
+                        <img
+                            src="/assets/Redberry_logo.png"
+                            width={150}
+                            height={24}
+                        />
+                    </Link>
                 </div>
-                <div className="nav-item-container">
+                <div>
                     <Button
                         text={isAuthorized ? "დაამატე ბლოგი" : "შესვლა"}
                         {...(isAuthorized

@@ -8,14 +8,15 @@
     border: none;
     cursor: pointer;
     transition: 0.2s ease-in-out;
+    text-decoration: none;
 
     &-disabled {
         background: #e4e3eb;
         transition: 0.2s ease-in-out;
     }
 
-    .button:hover {
-        background: #5d37f3;
+    &:hover {
+        background: #4721dd;
         color: white;
     }
 }

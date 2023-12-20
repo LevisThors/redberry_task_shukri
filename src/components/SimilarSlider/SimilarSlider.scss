@@ -1,0 +1,41 @@
+.similar-slider {
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    &-inner {
+        display: flex;
+        gap: 32px;
+    }
+
+    &-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    &-buttons {
+        display: flex;
+        gap: 24px;
+
+        img {
+            cursor: pointer;
+        }
+    }
+
+    &-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 100px 0 40px 0;
+    }
+
+    &-title {
+        color: #1a1a1f;
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 125%;
+        margin: 0;
+    }
+}

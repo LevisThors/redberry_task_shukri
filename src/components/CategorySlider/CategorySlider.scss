@@ -1,9 +1,14 @@
 .category-slider {
     max-width: 50%;
     overflow: hidden;
-    padding-inline: 20px;
+    box-sizing: border-box;
     white-space: nowrap;
-    cursor: pointer;
+    cursor: grab;
+
+    &-inner {
+        display: flex;
+        gap: 24px;
+    }
 
     &-container {
         width: 100%;
@@ -12,7 +17,6 @@
     }
 
     &-item {
-        padding: 8px 16px;
         font-size: 12px;
         border-radius: 50px;
         border: 1px solid transparent;
@@ -21,5 +25,42 @@
         &-active {
             border: 1px solid #000;
         }
+    }
+
+    &-skeleton {
+        max-width: 50%;
+        overflow: hidden;
+        box-sizing: border-box;
+        white-space: nowrap;
+        display: flex;
+        gap: 24px;
+
+        &-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        &-item {
+            height: 32px;
+            width: 85px;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #eee, #ddd, #eee, #ddd);
+            background-size: 400% 400%;
+            animation: gradient 7s infinite;
+        }
+    }
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }

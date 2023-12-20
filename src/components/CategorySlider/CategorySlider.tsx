@@ -1,71 +1,74 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useRef, useEffect } from "react";
 import { CategoryType } from "../../types/CategoryType";
-import { DraggableCore } from "react-draggable";
+import { motion } from "framer-motion";
 import "./CategorySlider.scss";
+import CategorySliderSkeleton from "./CategorySliderSkeleton/CategorySliderSkeleton";
 
 interface CategorySliderProps {
     categories: CategoryType[];
-    toggleActiveFilter: any;
+    toggleActiveFilter?: any;
     activeFilters?: string[];
+    size?: "small" | "large";
 }
 
 const CategorySlider: React.FC<CategorySliderProps> = ({
     categories,
     toggleActiveFilter,
     activeFilters,
+    size,
 }) => {
-    const [xPos, setXPos] = useState(0);
+    const [width, setWidth] = useState(0);
+    const slider = useRef<any>();
 
-    const handleDrag = (e, ui) => {
-        const containerWidth =
-            document.querySelector(".category-slider")?.clientWidth || 0;
-        const contentWidth =
-            document.querySelector(".category-slider div")?.scrollWidth || 0;
-        const maxDrag = containerWidth - contentWidth;
+    useEffect(() => {
+        setWidth(slider.current.scrollWidth - slider.current.offsetWidth);
+    }, [categories]);
 
-        if (xPos + ui.deltaX < 0 && xPos + ui.deltaX > maxDrag) {
-            setXPos(xPos + ui.deltaX);
-        }
-    };
     return (
-        <section className="category-slider-container">
-            <div className="category-slider">
-                <DraggableCore onDrag={handleDrag}>
-                    <div
-                        style={{
-                            transform: `translateX(${xPos}px)`,
-                            padding: "0 20px",
-                        }}
-                    >
-                        {categories.map((category, index) => (
-                            <div
+        <section
+            className="category-slider-container"
+            style={size === "small" ? { justifyContent: "start" } : {}}
+        >
+            <motion.div
+                ref={slider}
+                className="category-slider"
+                style={size === "small" ? { maxWidth: "100%" } : {}}
+            >
+                <motion.div
+                    drag="x"
+                    dragConstraints={{ right: 0, left: -width }}
+                    className="category-slider-inner"
+                    style={size === "small" ? { gap: "16px" } : {}}
+                >
+                    {!categories ? (
+                        <CategorySliderSkeleton />
+                    ) : (
+                        categories.map((category, index) => (
+                            <button
                                 key={index}
+                                name={category.id.toString()}
+                                onClick={(e) => toggleActiveFilter(e)}
+                                className={`category-slider-item ${
+                                    activeFilters?.includes(
+                                        category.id.toString()
+                                    ) && "category-slider-item-active"
+                                }`}
                                 style={{
-                                    display: "inline-block",
-                                    marginRight: "20px",
+                                    backgroundColor: category.background_color,
+                                    color: category.text_color,
+                                    padding:
+                                        size === "small"
+                                            ? "6px 10px"
+                                            : "8px 16px",
                                 }}
                             >
-                                <button
-                                    name={category.id.toString()}
-                                    onClick={(e) => toggleActiveFilter(e)}
-                                    className={`category-slider-item ${
-                                        activeFilters?.includes(
-                                            category.id.toString()
-                                        ) && "category-slider-item-active"
-                                    }`}
-                                    style={{
-                                        backgroundColor:
-                                            category.background_color,
-                                        color: category.text_color,
-                                    }}
-                                >
-                                    {category.title}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </DraggableCore>
-            </div>
+                                {category.title}
+                            </button>
+                        ))
+                    )}
+                </motion.div>
+            </motion.div>
         </section>
     );
 };
