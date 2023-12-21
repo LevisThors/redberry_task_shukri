@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import "./Input.scss";
 
 interface InputProps {
@@ -10,6 +10,7 @@ interface InputProps {
     validation?: Record<string, boolean>;
     required?: boolean;
     placeholder?: string;
+    name: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -21,7 +22,20 @@ const Input: React.FC<InputProps> = ({
     validation,
     required,
     placeholder,
+    name,
 }) => {
+    const [touched, setTouched] = useState(false);
+    const [emailTouched, setEmailTouched] = useState(false);
+
+    const handleFocus = () => {
+        if (!touched) {
+            setTouched(true);
+        }
+        if (name === "email" && !emailTouched) {
+            setEmailTouched(true);
+        }
+    };
+
     return (
         <div className="input-container">
             <label className="input-label">
@@ -29,10 +43,16 @@ const Input: React.FC<InputProps> = ({
                 {required && "*"}
             </label>
             <input
+                name={name}
                 type={type}
                 value={value}
                 onChange={onChange}
-                className="input"
+                onFocus={handleFocus}
+                className={`input ${
+                    validation && Object.values(validation).some((val) => !val)
+                        ? "input-danger"
+                        : ""
+                }`}
                 required={required}
                 placeholder={placeholder}
             />
@@ -43,15 +63,36 @@ const Input: React.FC<InputProps> = ({
                 </p>
             )}
             {validation && (
-                <ul className="input-validation-container">
+                <ul
+                    className={`input-validation-container ${
+                        name === "email" && "input-validation-email"
+                    }`}
+                >
                     {Object.keys(validation).map((key) => (
                         <li
                             key={key}
                             className={`input-validation ${
-                                validation[key] ? "pass" : "fail"
+                                touched
+                                    ? validation[key]
+                                        ? "input-validation-pass"
+                                        : "input-validation-fail"
+                                    : ""
                             }`}
                         >
-                            {key}
+                            {name === "email" && emailTouched ? (
+                                <>
+                                    <img
+                                        src="/assets/icon_danger.svg"
+                                        width={20}
+                                        height={20}
+                                    />
+                                    {key}
+                                </>
+                            ) : name === "email" ? (
+                                ""
+                            ) : (
+                                key
+                            )}
                         </li>
                     ))}
                 </ul>

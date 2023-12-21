@@ -49,7 +49,7 @@ export const useFilteredBlogs = (activeFilters?: string[]) => {
         };
 
         getFilteredBlogs();
-    }, []);
+    }, [activeFilters]);
 
     return { blogs, loading, error };
 };

@@ -43,7 +43,7 @@ const NavBar: React.FC = () => {
                     <Button
                         text={isAuthorized ? "დაამატე ბლოგი" : "შესვლა"}
                         {...(isAuthorized
-                            ? { href: "/blogs/add" }
+                            ? { href: "/blog/create" }
                             : { onClick: toggleLoginModal })}
                         width="fit-content"
                     />

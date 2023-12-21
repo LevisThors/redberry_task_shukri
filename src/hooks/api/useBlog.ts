@@ -27,7 +27,7 @@ export const useBlog = (id: string | undefined) => {
         };
 
         getBlogById();
-    }, []);
+    }, [id]);
 
     return { blog, loading, error };
 };

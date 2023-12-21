@@ -18,16 +18,18 @@ const BlogDetail: React.FC = () => {
                         <img src={blog.image} alt={blog.title} />
                     </div>
                     <div className="blog-details-header">
-                        <span className="blog-details-author">
-                            {blog.author}
-                        </span>
-                        <div className="blog-details-date">
-                            <span>
-                                {new Date(blog.publish_date)
-                                    .toLocaleDateString("en-GB")
-                                    .replace(/\//g, ".")}
+                        <div className="blog-details-header-top">
+                            <span className="blog-details-header-author">
+                                {blog.author}
                             </span>
-                            <span>{blog.email}</span>
+                            <div className="blog-details-header-date">
+                                <span>
+                                    {new Date(blog.publish_date)
+                                        .toLocaleDateString("en-GB")
+                                        .replace(/\//g, ".")}
+                                </span>
+                                <span>{" • " + blog.email}</span>
+                            </div>
                         </div>
                         <h1>{blog.title}</h1>
                         <CategorySlider

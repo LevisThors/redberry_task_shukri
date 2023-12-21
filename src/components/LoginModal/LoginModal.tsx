@@ -43,6 +43,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ handleClose }) => {
                         </div>
                         <h1 className="login-title">შესვლა</h1>
                         <Input
+                            name="email"
                             type="email"
                             label="ელ-ფოსტა"
                             value={email}
