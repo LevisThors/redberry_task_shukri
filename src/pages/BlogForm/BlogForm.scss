@@ -1,6 +1,8 @@
 .blog-form {
     width: 600px;
     max-width: 600px;
+    display: flex;
+    flex-direction: column;
     gap: 40px;
 
     &-container {
@@ -31,5 +33,11 @@
         div {
             width: 50%;
         }
+    }
+
+    &-button {
+        width: 100%;
+        display: flex;
+        justify-content: end;
     }
 }

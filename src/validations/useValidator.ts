@@ -1,11 +1,7 @@
+import { BlogFormType } from "../types/BlogFormType";
 import { ValidatorType } from "./ValidatorType";
 
-export const useValidator = (data: {
-    title: string;
-    description: string;
-    author: string;
-    email: string;
-}) => {
+export const useValidator = (data: BlogFormType) => {
     const errors: ValidatorType = {
         author: {
             "მინიმუმ 4 სიმბოლო": data.author.replace(/\s/g, "").length >= 4,
@@ -20,10 +16,10 @@ export const useValidator = (data: {
                     : false,
         },
         title: {
-            "მინიმუმ 2 სიმბოლო": data.title.length >= 2,
+            "მინიმუმ 4 სიმბოლო": data.title.length >= 4,
         },
         description: {
-            "მინიმუმ 2 სიმბოლო": data.description.length >= 2,
+            "მინიმუმ 4 სიმბოლო": data.description.length >= 4,
         },
         email: {
             "მეილი უნდა მთავრდებოდეს @redberry.ge-ით":

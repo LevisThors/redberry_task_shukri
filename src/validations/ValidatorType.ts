@@ -5,10 +5,10 @@ export interface ValidatorType {
         "მხოლოდ ქართული სიმბოლოები": boolean;
     };
     title: {
-        "მინიმუმ 2 სიმბოლო": boolean;
+        "მინიმუმ 4 სიმბოლო": boolean;
     };
     description: {
-        "მინიმუმ 2 სიმბოლო": boolean;
+        "მინიმუმ 4 სიმბოლო": boolean;
     };
     email: {
         "მეილი უნდა მთავრდებოდეს @redberry.ge-ით": boolean;

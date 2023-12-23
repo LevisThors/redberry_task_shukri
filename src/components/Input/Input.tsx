@@ -5,7 +5,9 @@ interface InputProps {
     label: string;
     type: string;
     value: string;
-    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onChange: (
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
     error?: string;
     validation?: Record<string, boolean>;
     required?: boolean;
@@ -42,20 +44,41 @@ const Input: React.FC<InputProps> = ({
                 {label}
                 {required && "*"}
             </label>
-            <input
-                name={name}
-                type={type}
-                value={value}
-                onChange={onChange}
-                onFocus={handleFocus}
-                className={`input ${
-                    validation && Object.values(validation).some((val) => !val)
-                        ? "input-danger"
-                        : ""
-                }`}
-                required={required}
-                placeholder={placeholder}
-            />
+
+            {type === "textarea" ? (
+                <textarea
+                    name={name}
+                    value={value}
+                    onChange={onChange}
+                    onFocus={handleFocus}
+                    className={`input input-textarea ${
+                        touched &&
+                        validation &&
+                        Object.values(validation).some((val) => !val)
+                            ? "input-danger"
+                            : touched && "input-success"
+                    }`}
+                    required={required}
+                    placeholder={placeholder}
+                ></textarea>
+            ) : (
+                <input
+                    name={name}
+                    type={type}
+                    value={value}
+                    onChange={onChange}
+                    onFocus={handleFocus}
+                    className={`input ${
+                        touched &&
+                        validation &&
+                        Object.values(validation).some((val) => !val)
+                            ? "input-danger"
+                            : touched && "input-success"
+                    }`}
+                    required={required}
+                    placeholder={placeholder}
+                />
+            )}
             {error && (
                 <p className="input-error">
                     <img src="assets/icon_danger.svg" width={20} height={20} />
@@ -79,13 +102,16 @@ const Input: React.FC<InputProps> = ({
                                     : ""
                             }`}
                         >
-                            {name === "email" && emailTouched ? (
+                            {name === "email" &&
+                            emailTouched &&
+                            !validation[key] ? (
                                 <>
                                     <img
                                         src="/assets/icon_danger.svg"
                                         width={20}
                                         height={20}
                                     />
+
                                     {key}
                                 </>
                             ) : name === "email" ? (

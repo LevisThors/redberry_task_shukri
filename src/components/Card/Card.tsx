@@ -11,7 +11,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = ({ content }) => {
     return (
         <div className="card">
-            <img src={content.image} className="card-image" />
+            <img src={content.image} className="card-image" loading="lazy" />
             <div className="card-ad">
                 <span className="card-author">{content.author}</span>
                 <span className="card-date">
