@@ -10,6 +10,7 @@ interface CategorySliderProps {
     toggleActiveFilter?: any;
     activeFilters?: string[];
     size?: "small" | "large";
+    remove?: (id: string) => void;
 }
 
 const CategorySlider: React.FC<CategorySliderProps> = ({
@@ -17,6 +18,7 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
     toggleActiveFilter,
     activeFilters,
     size,
+    remove,
 }) => {
     const [width, setWidth] = useState(0);
     const slider = useRef<any>();
@@ -37,7 +39,11 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
             >
                 <motion.div
                     drag="x"
-                    dragConstraints={{ right: 0, left: -width }}
+                    dragConstraints={
+                        remove
+                            ? { right: 0, left: -width - 40 }
+                            : { right: 0, left: -width }
+                    }
                     className="category-slider-inner"
                     style={size === "small" ? { gap: "16px" } : {}}
                 >
@@ -48,7 +54,11 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
                             <button
                                 key={index}
                                 name={category.id.toString()}
-                                onClick={(e) => toggleActiveFilter(e)}
+                                onClick={
+                                    toggleActiveFilter
+                                        ? (e) => toggleActiveFilter(e)
+                                        : (e) => e.preventDefault()
+                                }
                                 className={`category-slider-item ${
                                     activeFilters?.includes(
                                         category.id.toString()
@@ -64,6 +74,17 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
                                 }}
                             >
                                 {category.title}
+                                {remove && (
+                                    <img
+                                        src="/assets/icon_white_remove.svg"
+                                        alt="remove-category"
+                                        onClick={() =>
+                                            remove(category.id.toString())
+                                        }
+                                        width={16}
+                                        height={16}
+                                    />
+                                )}
                             </button>
                         ))
                     )}

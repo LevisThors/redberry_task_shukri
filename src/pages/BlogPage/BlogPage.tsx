@@ -22,8 +22,6 @@ const BlogPage: React.FC = () => {
         error: blogError,
     } = useFilteredBlogs(activeFilter);
 
-    console.log("hello");
-
     const toggleActiveFilter = (e) => {
         const { name } = e.target;
 

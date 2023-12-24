@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import Input from "../../components/Input/Input";
+import Input, { Select } from "../../components/Input/Input";
 import { useValidator } from "../../validations/useValidator";
 import Button from "../../components/Button/Button";
 import { BlogFormType } from "../../types/BlogFormType";
 import { ValidatorType } from "../../validations/ValidatorType";
 import Dropzone from "../../components/Dropzone/Dropzone";
+import { useCategories } from "../../hooks/api/useCategories";
 import { useEffect } from "react";
 import "./BlogForm.scss";
 
@@ -17,11 +18,12 @@ const BlogForm: React.FC = () => {
         publish_date: "",
         image: "",
     });
+    const [categoriesToSubmit, setCategoriesToSubmit] = useState<string>("");
+    const { categories, loading, error } = useCategories();
     const validations = useValidator(data);
     console.log(validations);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Add your logic to handle form submission here
     };
 
     useEffect(() => {
@@ -52,7 +54,7 @@ const BlogForm: React.FC = () => {
             setData({ ...data, image: "" });
         }
     };
-    console.log(data);
+    console.log(categoriesToSubmit);
     return (
         <section className="blog-form-container">
             <div className="blog-form">
@@ -99,8 +101,14 @@ const BlogForm: React.FC = () => {
                             required={true}
                             value={data.publish_date}
                             name="publish_date"
+                            fail={data.publish_date === ""}
                         />
-                        <select></select>
+                        <Select
+                            categories={categories}
+                            label="კატეგორია"
+                            required={true}
+                            setCategories={setCategoriesToSubmit}
+                        />
                     </div>
                     <div className="blog-form-row">
                         <Input
@@ -118,9 +126,11 @@ const BlogForm: React.FC = () => {
                 <div className="blog-form-button">
                     <Button
                         text="გამოქვეყნება"
-                        width="50%"
+                        width="288px"
                         onClick={handleSubmit}
-                        disabled={!isFormValid(data, validations)}
+                        disabled={
+                            !isFormValid(data, validations, categoriesToSubmit)
+                        }
                     />
                 </div>
             </div>
@@ -128,14 +138,20 @@ const BlogForm: React.FC = () => {
     );
 };
 
-const isFormValid = (data: BlogFormType, validations: ValidatorType) => {
+const isFormValid = (
+    data: BlogFormType,
+    validations: ValidatorType,
+    categories: string
+) => {
     const allFieldsFilled = Object.values(data).every((field) => field !== "");
 
     const allValidationsPassed = Object.values(validations).every(
         (validation) => Object.values(validation).every((isValid) => isValid)
     );
 
-    return allFieldsFilled && allValidationsPassed;
+    const categoriesPresent = categories !== "";
+
+    return allFieldsFilled && allValidationsPassed && categoriesPresent;
 };
 
 export default BlogForm;

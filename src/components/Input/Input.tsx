@@ -1,4 +1,6 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
+import { CategoryType } from "../../types/CategoryType";
+import CategorySlider from "../CategorySlider/CategorySlider";
 import "./Input.scss";
 
 interface InputProps {
@@ -13,6 +15,7 @@ interface InputProps {
     required?: boolean;
     placeholder?: string;
     name: string;
+    fail?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -25,6 +28,7 @@ const Input: React.FC<InputProps> = ({
     required,
     placeholder,
     name,
+    fail,
 }) => {
     const [touched, setTouched] = useState(false);
     const [emailTouched, setEmailTouched] = useState(false);
@@ -74,7 +78,7 @@ const Input: React.FC<InputProps> = ({
                         Object.values(validation).some((val) => !val)
                             ? "input-danger"
                             : touched && "input-success"
-                    }`}
+                    } ${fail && touched && "input-danger"}`}
                     required={required}
                     placeholder={placeholder}
                 />
@@ -89,6 +93,9 @@ const Input: React.FC<InputProps> = ({
                 <ul
                     className={`input-validation-container ${
                         name === "email" && "input-validation-email"
+                    } ${
+                        Object.keys(validation).length === 1 &&
+                        "input-validation-single"
                     }`}
                 >
                     {Object.keys(validation).map((key) => (
@@ -124,6 +131,118 @@ const Input: React.FC<InputProps> = ({
                 </ul>
             )}
         </div>
+    );
+};
+
+interface SelectProps {
+    label: string;
+    required?: boolean;
+    categories: CategoryType[];
+    setCategories: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const Select: React.FC<SelectProps> = ({
+    label,
+    required,
+    categories,
+    setCategories,
+}) => {
+    const [selected, setSelected] = useState<CategoryType[]>([]);
+    const [newData, setNewData] = useState<CategoryType[]>(categories);
+    const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
+    const [touched, setTouched] = useState<boolean>(false);
+
+    const handleRemove = (id: string) => {
+        setNewData((prev) => [
+            ...prev,
+            ...categories.filter((item) => item.id == id),
+        ]);
+        setSelected(selected.filter((item) => item.id != id));
+        setCategories((prev) =>
+            prev
+                .split(",")
+                .filter((item) => item != id)
+                .join(",")
+        );
+    };
+
+    const handleAdd = (id: string) => {
+        setSelected((prev) => [
+            ...prev,
+            ...categories.filter((item) => item.id == id),
+        ]);
+        setCategories((prev) => (prev ? prev + "," + id : id));
+        setNewData((prev) => prev.filter((item) => item.id != id));
+    };
+
+    const toggleMasonry = () => {
+        setIsSelectOpen((prev) => !prev);
+        setTouched(true);
+    };
+
+    useEffect(() => {
+        setNewData(categories);
+    }, [categories]);
+
+    return (
+        <>
+            {isSelectOpen && (
+                <span
+                    className="input-select-close-overlay"
+                    onClick={toggleMasonry}
+                ></span>
+            )}
+            <div className="input-container input-select-container">
+                <label className="input-label">
+                    {label}
+                    {required && "*"}
+                </label>
+                <span
+                    className={`input input-select ${
+                        isSelectOpen
+                            ? "input-select-focus"
+                            : selected.length > 0
+                            ? touched && "input-success"
+                            : touched && "input-danger"
+                    } `}
+                >
+                    <span
+                        className="input-select-toggler"
+                        onClick={toggleMasonry}
+                    >
+                        <img
+                            src="/assets/icon_open.svg"
+                            alt="Open category masonry"
+                            width={20}
+                            height={20}
+                        />
+                    </span>
+                    <CategorySlider
+                        remove={handleRemove}
+                        categories={selected}
+                    />
+                </span>
+                {isSelectOpen && (
+                    <span className="input-select-masonry">
+                        {newData.map((category) => (
+                            <span
+                                key={category.id}
+                                className="input-select-item"
+                                style={{
+                                    backgroundColor: category.background_color,
+                                    color: category.text_color,
+                                }}
+                                onClick={() =>
+                                    handleAdd(category.id.toString())
+                                }
+                            >
+                                {category.title}
+                            </span>
+                        ))}
+                    </span>
+                )}
+            </div>
+        </>
     );
 };
 

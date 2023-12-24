@@ -46,7 +46,8 @@ const Dropzone: React.FC<DropzoneProps> = ({ onFileUpload }) => {
     };
 
     return (
-        <>
+        <div className="image-dropzone-container">
+            <label className="image-dropzone-label">ატვირთეთ ფოტო</label>
             {image ? (
                 <div className="image-dropzone-uploaded">
                     <div className="image-dropzone-uploaded-inner">
@@ -96,7 +97,7 @@ const Dropzone: React.FC<DropzoneProps> = ({ onFileUpload }) => {
                     </span>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 

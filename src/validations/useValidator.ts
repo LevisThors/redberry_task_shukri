@@ -16,10 +16,10 @@ export const useValidator = (data: BlogFormType) => {
                     : false,
         },
         title: {
-            "მინიმუმ 4 სიმბოლო": data.title.length >= 4,
+            "მინიმუმ 2 სიმბოლო": data.title.length >= 4,
         },
         description: {
-            "მინიმუმ 4 სიმბოლო": data.description.length >= 4,
+            "მინიმუმ 2 სიმბოლო": data.description.length >= 4,
         },
         email: {
             "მეილი უნდა მთავრდებოდეს @redberry.ge-ით":

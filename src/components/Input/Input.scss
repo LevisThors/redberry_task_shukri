@@ -7,7 +7,8 @@
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
 
-    &:hover {
+    &:hover,
+    &-select:hover {
         background: #f9f9fa;
     }
 
@@ -17,28 +18,6 @@
         font-style: normal;
         font-weight: 400;
         line-height: 143%;
-    }
-
-    &-danger {
-        &:focus {
-            outline: none;
-            border: 1.5px solid #ea1919;
-            background: #faf2f3;
-        }
-        outline: none;
-        border: 1.5px solid #ea1919;
-        background: #faf2f3;
-    }
-
-    &-success {
-        &:focus {
-            outline: none;
-            border: 1px solid #14d81c;
-            background: #f8fff8;
-        }
-        outline: none;
-        border: 1px solid #14d81c;
-        background: #f8fff8;
     }
 
     &-textarea {
@@ -70,6 +49,7 @@
             flex-direction: column;
             margin-top: 4px;
             margin-left: 0;
+            margin-bottom: 0;
             padding-inline-start: 20px;
         }
 
@@ -90,6 +70,11 @@
         &-fail {
             color: #ea1919;
         }
+
+        &-single {
+            list-style-type: none;
+            padding-left: 0;
+        }
     }
 
     &-error {
@@ -104,9 +89,149 @@
         align-items: center;
     }
 
-    &:focus {
+    &-select {
+        display: flex;
+        position: relative;
+        align-items: center;
+        height: 44px;
+        width: 100%;
+        overflow: hidden;
+        border: 1px solid #e4e3eb;
+        border-radius: 12px;
+        background: #fcfcfd;
+        padding-inline: 6px;
+        max-width: 286px;
+        z-index: 1000;
+
+        // Category slider overrides
+        .category-slider {
+            width: 100%;
+            max-width: 100%;
+
+            &-inner {
+                gap: 8px;
+            }
+        }
+
+        &-close-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        &-toggler {
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1000;
+            cursor: pointer;
+            border-radius: 0px 10px 10px 0px;
+            background: #f7f7ff;
+
+            img {
+                margin-block: 10px;
+                margin-inline: 5.5px 14.5px;
+            }
+        }
+
+        &-container {
+            position: relative;
+        }
+
+        &-item {
+            font-size: 12px;
+            border-radius: 50px;
+            border: 1px solid transparent;
+            padding: 8px 16px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        &-masonry {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: start;
+            align-items: start;
+            width: 288px;
+            max-width: 288px;
+            height: 144px;
+            border-radius: 12px;
+            border: 1px solid #e4e3eb;
+            background: #fff;
+            box-shadow: 2px 4px 8px 0px rgba(0, 0, 0, 0.08);
+            position: absolute;
+            gap: 8px;
+            padding: 16px 27px 16px 16px;
+            box-sizing: border-box;
+            top: calc(100% + 2px);
+            overflow-y: auto;
+            z-index: 1000;
+
+            &-wrapper {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            &::-webkit-scrollbar {
+                width: 3px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #cfced6;
+                border-radius: 50px;
+                padding-block: 2px;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background: #bdbcc4;
+            }
+
+            scrollbar-width: thin;
+            scrollbar-color: #888 #f1f1f1;
+        }
+    }
+
+    &:focus,
+    &-select-focus {
         outline: none;
         border: 1.5px solid #5d37f3;
         background: #f7f7ff;
+    }
+
+    &-success {
+        &:focus {
+            outline: none;
+            border: 1px solid #14d81c;
+            background: #f8fff8;
+        }
+        outline: none;
+        border: 1px solid #14d81c;
+        background: #f8fff8;
+
+        .input-select-toggler {
+            background-color: #f8fff8;
+        }
+    }
+
+    &-danger {
+        &:focus {
+            outline: none;
+            border: 1.5px solid #ea1919;
+            background: #faf2f3;
+        }
+        outline: none;
+        border: 1.5px solid #ea1919;
+        background: #faf2f3;
+
+        .input-select-toggler {
+            background-color: #faf2f3;
+        }
     }
 }
