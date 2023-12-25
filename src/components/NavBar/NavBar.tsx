@@ -1,12 +1,17 @@
 import { Suspense, useState, useEffect } from "react";
 import { lazy } from "react";
 import Button from "../Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./NavBar.scss";
 
 const LoginModal = lazy(() => import("../LoginModal/LoginModal"));
 
 const NavBar: React.FC = () => {
+    const location = useLocation();
+    const currentPath = location.pathname;
+    const isHome = currentPath === "/";
+    const isDetails = currentPath.includes("/blog/details");
+    const isCreate = currentPath === "/blog/create";
     const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(
         localStorage.getItem("isAuthorized") === "true"
@@ -29,7 +34,11 @@ const NavBar: React.FC = () => {
 
     return (
         <>
-            <nav className="nav-container">
+            <nav
+                className={`nav-container ${
+                    isCreate && "nav-container-create"
+                }`}
+            >
                 <div>
                     <Link to={"/"} className="nav-logo">
                         <img
@@ -39,16 +48,26 @@ const NavBar: React.FC = () => {
                         />
                     </Link>
                 </div>
-                <div>
-                    <Button
-                        text={isAuthorized ? "დაამატე ბლოგი" : "შესვლა"}
-                        {...(isAuthorized
-                            ? { href: "/blog/create" }
-                            : { onClick: toggleLoginModal })}
-                        width="fit-content"
-                    />
-                </div>
+                {!isCreate && (
+                    <div>
+                        <Button
+                            text={isAuthorized ? "დაამატე ბლოგი" : "შესვლა"}
+                            {...(isAuthorized
+                                ? { href: "/blog/create" }
+                                : { onClick: toggleLoginModal })}
+                            width="fit-content"
+                        />
+                    </div>
+                )}
             </nav>
+            {!isHome && (
+                <img
+                    src="/assets/icon_back.svg"
+                    width={44}
+                    height={44}
+                    className={`nav-back ${isCreate && "nav-back-create"}`}
+                />
+            )}
             {isLoginModalOpen && (
                 <Suspense>
                     <LoginModal handleClose={toggleLoginModal} />

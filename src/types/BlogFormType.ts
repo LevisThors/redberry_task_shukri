@@ -4,5 +4,6 @@ export interface BlogFormType {
     author: "";
     email: "";
     publish_date: "";
-    image: string | ArrayBuffer | null;
+    image: string;
+    imageName: string;
 }

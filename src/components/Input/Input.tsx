@@ -182,6 +182,12 @@ export const Select: React.FC<SelectProps> = ({
 
     useEffect(() => {
         setNewData(categories);
+        const savedSelected = localStorage.getItem("categoriesToSubmit");
+        setSelected(
+            categories.filter((cat) =>
+                savedSelected?.split(",").includes(cat.id.toString())
+            )
+        );
     }, [categories]);
 
     return (

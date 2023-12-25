@@ -12,7 +12,6 @@ export const useFilteredBlogs = (activeFilters?: string[]) => {
 
     useEffect(() => {
         const filters = activeFilters ? activeFilters : [];
-
         const getFilteredBlogs = async () => {
             try {
                 const response = await axios.get(
@@ -39,7 +38,6 @@ export const useFilteredBlogs = (activeFilters?: string[]) => {
                         filters.includes(category.id.toString())
                     );
                 });
-
                 setBlogs(filteredBlogs);
                 setLoading(false);
             } catch (error) {
@@ -47,9 +45,8 @@ export const useFilteredBlogs = (activeFilters?: string[]) => {
                 setLoading(false);
             }
         };
-
         getFilteredBlogs();
-    }, [activeFilters]);
+    }, [activeFilters, id]);
 
     return { blogs, loading, error };
 };

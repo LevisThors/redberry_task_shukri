@@ -9,9 +9,34 @@
         padding-inline: 76px;
         height: 80px;
         border-bottom: 1px solid #e4e3eb;
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        &-create {
+            justify-content: center;
+        }
     }
 
     &-logo {
         display: flex;
+    }
+
+    &-back {
+        position: fixed;
+        top: 120px;
+        left: 80px;
+        background-color: #fff;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+
+        &-create {
+            background-color: #e4e3eb;
+        }
+
+        &:hover {
+            background-color: #d9d8e0;
+        }
     }
 }

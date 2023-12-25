@@ -6,6 +6,7 @@ import "./BlogDetail.scss";
 
 const BlogDetail: React.FC = () => {
     const { id } = useParams<string>();
+    console.log(id);
     const { blog, loading, error } = useBlog(id);
 
     console.log(blog);

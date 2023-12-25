@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input, { Select } from "../../components/Input/Input";
 import { useValidator } from "../../validations/useValidator";
 import Button from "../../components/Button/Button";
@@ -6,33 +6,31 @@ import { BlogFormType } from "../../types/BlogFormType";
 import { ValidatorType } from "../../validations/ValidatorType";
 import Dropzone from "../../components/Dropzone/Dropzone";
 import { useCategories } from "../../hooks/api/useCategories";
-import { useEffect } from "react";
+import { blobToFile } from "../../utils/blobToFile";
+import axios from "axios";
 import "./BlogForm.scss";
 
 const BlogForm: React.FC = () => {
-    const [data, setData] = useState<BlogFormType>({
-        title: "",
-        description: "",
-        author: "",
-        email: "",
-        publish_date: "",
-        image: "",
-    });
-    const [categoriesToSubmit, setCategoriesToSubmit] = useState<string>("");
-    const { categories, loading, error } = useCategories();
+    const initialData = JSON.parse(
+        localStorage.getItem("formData") ||
+            JSON.stringify({
+                title: "",
+                description: "",
+                author: "",
+                email: "",
+                publish_date: "",
+                image: "",
+                imageName: "",
+            })
+    );
+
+    const initialCategories = localStorage.getItem("categoriesToSubmit") || "";
+
+    const [data, setData] = useState<BlogFormType>(initialData);
+    const [categoriesToSubmit, setCategoriesToSubmit] =
+        useState<string>(initialCategories);
+    const { categories } = useCategories();
     const validations = useValidator(data);
-    console.log(validations);
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-    };
-
-    useEffect(() => {
-        document.body.style.backgroundColor = "#FBFAFF";
-
-        return () => {
-            document.body.style.backgroundColor = "#F3F2FA";
-        };
-    }, []);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -45,16 +43,68 @@ const BlogForm: React.FC = () => {
     const handleFileUpload = (file: File | null) => {
         if (file) {
             const reader = new FileReader();
-            reader.onload = () => {
-                const binaryStr = reader.result;
-                setData({ ...data, image: binaryStr });
+            reader.onloadend = () => {
+                setData({
+                    ...data,
+                    image: reader.result as string,
+                    imageName: file.name,
+                });
             };
-            reader.readAsBinaryString(file);
+            reader.readAsDataURL(file);
         } else {
-            setData({ ...data, image: "" });
+            setData({ ...data, image: "", imageName: "" });
         }
     };
-    console.log(categoriesToSubmit);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (isFormValid(data, validations, categoriesToSubmit)) {
+            const submitImage = blobToFile(data.image, data.imageName);
+
+            const formData = new FormData();
+            for (const key in data) {
+                if (key !== "image" && key !== "imageName")
+                    formData.append(key, data[key]);
+            }
+            formData.append("categories", "[" + categoriesToSubmit + "]");
+            formData.append("image", submitImage as File);
+            console.log(formData.get("title"));
+            console.log(data);
+            axios.post(
+                `https://api.blog.redberryinternship.ge/api/blogs`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer 3a346421bef42b8d9a84587ff8430fc6371b1f9d0932211161fdf1c4d49db3f0`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+
+            localStorage.removeItem("formData");
+            localStorage.removeItem("formValidations");
+            localStorage.removeItem("categoriesToSubmit");
+        } else {
+            // Form is not valid, handle accordingly
+            console.log("Form is not valid");
+        }
+    };
+
+    useEffect(() => {
+        localStorage.setItem("formData", JSON.stringify(data));
+        localStorage.setItem("formValidations", JSON.stringify(validations));
+        localStorage.setItem("categoriesToSubmit", categoriesToSubmit);
+    }, [data, validations, categoriesToSubmit]);
+
+    useEffect(() => {
+        document.body.style.backgroundColor = "#FBFAFF";
+
+        return () => {
+            document.body.style.backgroundColor = "#F3F2FA";
+        };
+    }, []);
+
     return (
         <section className="blog-form-container">
             <div className="blog-form">

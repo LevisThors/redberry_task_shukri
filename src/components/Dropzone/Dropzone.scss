@@ -11,6 +11,11 @@
     background-color: #f4f3ff;
     transition: all 0.2s ease-in-out;
 
+    &-fail {
+        border: 1px dashed #ff4d4f;
+        background-color: #fff1f0;
+    }
+
     &:hover {
         background-color: #f1effb;
         cursor: pointer;

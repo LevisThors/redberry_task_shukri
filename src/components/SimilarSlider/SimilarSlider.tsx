@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { CategoryType } from "../../types/CategoryType";
 import { useFilteredBlogs } from "../../hooks/api/useFilteredBlogs";
@@ -11,7 +11,10 @@ interface SimilarSliderProps {
 }
 
 const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
-    const categoryIds = categories?.map((category) => category.id.toString());
+    const categoryIds = useMemo(
+        () => categories?.map((category) => category.id.toString()),
+        [categories]
+    );
     const { blogs, loading, error } = useFilteredBlogs(categoryIds);
     const [isAtLeftEnd, setIsAtLeftEnd] = useState(true);
     const [isAtRightEnd, setIsAtRightEnd] = useState(false);
@@ -55,26 +58,22 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
                 <h2 className="similar-slider-title">მსგავსი სტატიები</h2>
                 <div className="similar-slider-buttons">
                     <img
-                        src={
-                            isAtLeftEnd
-                                ? "/assets/icon_arrow_left.svg"
-                                : "/assets/icon_arrow_right.svg"
-                        }
-                        style={!isAtLeftEnd ? { rotate: "180deg" } : {}}
+                        src="/assets/icon_arrow_left.svg"
                         width={44}
                         height={44}
                         onClick={handleLeftClick}
+                        className={`similar-slider-buttons-active ${
+                            isAtLeftEnd && "similar-slider-buttons-disabled"
+                        }`}
                     />
                     <img
-                        src={
-                            isAtRightEnd
-                                ? "/assets/icon_arrow_left.svg"
-                                : "/assets/icon_arrow_right.svg"
-                        }
-                        style={isAtRightEnd ? { rotate: "180deg" } : {}}
+                        src="/assets/icon_arrow_right.svg"
                         width={44}
                         height={44}
                         onClick={handleRightClick}
+                        className={`similar-slider-buttons-active ${
+                            isAtRightEnd && "similar-slider-buttons-disabled"
+                        }`}
                     />
                 </div>
             </div>
@@ -84,15 +83,17 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
                     className="similar-slider-inner"
                     style={{ x }}
                 >
-                    {loading
-                        ? [1, 2, 3, 4].map((index) => (
-                              <CardSkeleton key={index} />
-                          ))
-                        : blogs.map((blog) => (
-                              <>
-                                  <Card content={blog} />
-                              </>
-                          ))}
+                    {blogs.length < 1 ? (
+                        <p>მსგავსი ბლოგები არ მოიძებნა</p>
+                    ) : loading || error ? (
+                        [1, 2, 3, 4].map((index) => (
+                            <CardSkeleton key={index} />
+                        ))
+                    ) : (
+                        blogs.map((blog, index) => (
+                            <Card key={index} content={blog} />
+                        ))
+                    )}
                 </motion.div>
             </div>
         </section>
