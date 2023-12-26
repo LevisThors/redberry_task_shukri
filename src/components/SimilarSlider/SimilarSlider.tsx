@@ -33,7 +33,7 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
     }, [x]);
 
     const handleLeftClick = () => {
-        if (!isAtLeftEnd) {
+        if (!isAtLeftEnd && blogs.length > 3) {
             animate(x, x.get() + 415, {
                 type: "spring",
                 stiffness: 500,
@@ -43,7 +43,7 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
     };
 
     const handleRightClick = () => {
-        if (!isAtRightEnd) {
+        if (!isAtRightEnd && blogs.length > 3) {
             animate(x, x.get() - 415, {
                 type: "spring",
                 stiffness: 500,
@@ -72,7 +72,8 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
                         height={44}
                         onClick={handleRightClick}
                         className={`similar-slider-buttons-active ${
-                            isAtRightEnd && "similar-slider-buttons-disabled"
+                            (isAtRightEnd || blogs.length < 4) &&
+                            "similar-slider-buttons-disabled"
                         }`}
                     />
                 </div>

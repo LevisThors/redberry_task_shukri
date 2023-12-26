@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./pages/Root/Root";
 import PrivateRoute from "./middlewares/PrivateRoute";
+import { DataProvider } from "./providers/DataProvider";
 import "./index.scss";
 
 const BlogPage = lazy(() => import("./pages/BlogPage/BlogPage"));
@@ -46,6 +47,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <DataProvider>
+            <RouterProvider router={router} />
+        </DataProvider>
     </React.StrictMode>
 );

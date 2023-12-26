@@ -1,17 +1,18 @@
 import { Suspense, useState, useEffect } from "react";
 import { lazy } from "react";
 import Button from "../Button/Button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./NavBar.scss";
 
 const LoginModal = lazy(() => import("../LoginModal/LoginModal"));
 
 const NavBar: React.FC = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const currentPath = location.pathname;
     const isHome = currentPath === "/";
-    const isDetails = currentPath.includes("/blog/details");
     const isCreate = currentPath === "/blog/create";
+
     const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(
         localStorage.getItem("isAuthorized") === "true"
@@ -66,6 +67,7 @@ const NavBar: React.FC = () => {
                     width={44}
                     height={44}
                     className={`nav-back ${isCreate && "nav-back-create"}`}
+                    onClick={() => navigate(-1)}
                 />
             )}
             {isLoginModalOpen && (

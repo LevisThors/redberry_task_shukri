@@ -30,8 +30,15 @@ const Input: React.FC<InputProps> = ({
     name,
     fail,
 }) => {
+    const savedData = JSON.parse(localStorage.getItem("formData") || "")[name];
+
     const [touched, setTouched] = useState(false);
     const [emailTouched, setEmailTouched] = useState(false);
+
+    useEffect(() => {
+        savedData && setTouched(true);
+        savedData.email && setEmailTouched(true);
+    }, [savedData]);
 
     const handleFocus = () => {
         if (!touched) {
@@ -78,7 +85,8 @@ const Input: React.FC<InputProps> = ({
                         Object.values(validation).some((val) => !val)
                             ? "input-danger"
                             : touched && "input-success"
-                    } ${fail && touched && "input-danger"}`}
+                    } ${fail && touched && "input-danger"}
+                    ${name === "email" && value === "" && "input-important"}`}
                     required={required}
                     placeholder={placeholder}
                 />
@@ -110,7 +118,7 @@ const Input: React.FC<InputProps> = ({
                             }`}
                         >
                             {name === "email" &&
-                            emailTouched &&
+                            value !== "" &&
                             !validation[key] ? (
                                 <>
                                     <img
@@ -188,6 +196,7 @@ export const Select: React.FC<SelectProps> = ({
                 savedSelected?.split(",").includes(cat.id.toString())
             )
         );
+        savedSelected && setTouched(true);
     }, [categories]);
 
     return (

@@ -23,7 +23,7 @@ export const useValidator = (data: BlogFormType) => {
         },
         email: {
             "მეილი უნდა მთავრდებოდეს @redberry.ge-ით":
-                data.email.includes("@redberry.ge"),
+                data.email.includes("@redberry.ge") || data.email === "",
         },
     };
 

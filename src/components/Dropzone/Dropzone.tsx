@@ -17,6 +17,8 @@ const Dropzone: React.FC<DropzoneProps> = ({ onFileUpload }) => {
         if (storedData.image) {
             setImage(storedData.image);
             setFileName(storedData.imageName);
+        } else {
+            setError("ფაილი არ არის არჩეული. გთხოვთ ატვირთეთ ფოტო.");
         }
     }, []);
 

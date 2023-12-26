@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BlogType } from "../../types/BlogType";
 import CategorySlider from "../CategorySlider/CategorySlider";
 import "./Card.scss";
@@ -9,6 +9,9 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ content }) => {
+    const location = useLocation();
+    const isBlogPage = location.pathname.startsWith("/blog/");
+
     return (
         <div className="card">
             <img src={content.image} className="card-image" loading="lazy" />
@@ -25,7 +28,15 @@ const Card: React.FC<CardProps> = ({ content }) => {
                 <CategorySlider categories={content.categories} size="small" />
             </div>
             <p className="card-description">{content.description}</p>
-            <Link className="card-more" to={`/blog/${content.id}`}>
+            <Link
+                className="card-more"
+                to={`/blog/${content.id}`}
+                onClick={
+                    isBlogPage
+                        ? () => window.scrollTo({ top: 0, behavior: "smooth" })
+                        : undefined
+                }
+            >
                 სრულად ნახვა{" "}
                 <img src="/assets/icon_more.svg" width={20} height={20} />
             </Link>

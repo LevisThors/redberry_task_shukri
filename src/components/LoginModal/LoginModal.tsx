@@ -13,7 +13,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ handleClose }) => {
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         setEmail(event.target.value);
     };
 
@@ -58,30 +60,67 @@ const LoginModal: React.FC<LoginModalProps> = ({ handleClose }) => {
                         />
                     </>
                 ) : (
-                    <>
-                        <div>
-                            <img
-                                onClick={handleClose}
-                                className="login-close"
-                                src="/assets/icon_close.svg"
-                                width={24}
-                                height={24}
-                            />
-                        </div>
-                        <div className="login-success">
-                            <img
-                                src="/assets/icon_success.svg"
-                                width={64}
-                                height={64}
-                            />
-                            <h1 className="login-title">
-                                წარმატებული ავტორიზაცია
-                            </h1>
-                        </div>
-
-                        <Button text="კარგი" onClick={handleClose} />
-                    </>
+                    <SuccessModal
+                        handleClose={handleClose}
+                        successText="წარმატებული ავტორიზაცია"
+                    />
                 )}
+            </div>
+        </>
+    );
+};
+
+export const SuccessModal = ({
+    handleClose,
+    successText,
+    errorText,
+    backText,
+    href,
+    success,
+}: {
+    handleClose: MouseEventHandler;
+    successText: string;
+    errorText?: string;
+    backText?: string;
+    href?: string;
+    success?: boolean;
+}) => {
+    return (
+        <>
+            <div>
+                <img
+                    onClick={handleClose}
+                    className="login-close"
+                    src="/assets/icon_close.svg"
+                    width={24}
+                    height={24}
+                />
+            </div>
+            <div className="login-success">
+                {success ? (
+                    <img
+                        src="/assets/icon_success.svg"
+                        width={64}
+                        height={64}
+                    />
+                ) : (
+                    <img
+                        src="/assets/icon_white_x.svg"
+                        width={64}
+                        height={64}
+                        className="login-error-icon"
+                    />
+                )}
+                <h1 className="login-title">
+                    {success ? successText : errorText}
+                </h1>
+            </div>
+            <div className="login-return-button-container">
+                <Button
+                    text={backText ? backText : "კარგი"}
+                    onClick={handleClose}
+                    href={href ? href : undefined}
+                />
             </div>
         </>
     );

@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PageHeader from "../../components/PageHeader/PageHeader";
 import CategorySlider from "../../components/CategorySlider/CategorySlider";
-import { useCategories } from "../../hooks/api/useCategories";
 import { useFilteredBlogs } from "../../hooks/api/useFilteredBlogs";
 import Card from "../../components/Card/Card";
 import CardSkeleton from "../../components/Card/CardSkeleton/CardSkeleton";
 import CategorySliderSkeleton from "../../components/CategorySlider/CategorySliderSkeleton/CategorySliderSkeleton";
-
+import { DataContext } from "../../providers/DataContext";
 import "./BlogPage.scss";
 
 const BlogPage: React.FC = () => {
@@ -15,12 +14,10 @@ const BlogPage: React.FC = () => {
         : [];
     const [activeFilter, setActiveFilter] = useState<string[]>(initialFilter);
 
-    const { categories, loading, error } = useCategories();
-    const {
-        blogs,
-        loading: blogLoading,
-        error: blogError,
-    } = useFilteredBlogs(activeFilter);
+    const { categories: categoryData } = useContext(DataContext);
+    const categories = categoryData?.data;
+
+    const { blogs, loading } = useFilteredBlogs(activeFilter);
 
     const toggleActiveFilter = (e) => {
         const { name } = e.target;
@@ -55,11 +52,11 @@ const BlogPage: React.FC = () => {
             )}
             <section className="blog-container">
                 <div className="blog">
-                    {blogLoading
+                    {loading
                         ? [1, 2, 3].map((index) => <CardSkeleton key={index} />)
                         : blogs.map((blog, index) => (
                               <>
-                                  <Card content={blog} key={index} />
+                                  <Card content={blog} key={index + blog.id} />
                               </>
                           ))}
                 </div>

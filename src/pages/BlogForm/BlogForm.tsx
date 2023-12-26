@@ -1,35 +1,43 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Input, { Select } from "../../components/Input/Input";
 import { useValidator } from "../../validations/useValidator";
 import Button from "../../components/Button/Button";
 import { BlogFormType } from "../../types/BlogFormType";
 import { ValidatorType } from "../../validations/ValidatorType";
 import Dropzone from "../../components/Dropzone/Dropzone";
-import { useCategories } from "../../hooks/api/useCategories";
 import { blobToFile } from "../../utils/blobToFile";
+import { DataContext } from "../../providers/DataContext";
+import { SuccessModal } from "../../components/LoginModal/LoginModal";
 import axios from "axios";
 import "./BlogForm.scss";
 
 const BlogForm: React.FC = () => {
-    const initialData = JSON.parse(
-        localStorage.getItem("formData") ||
-            JSON.stringify({
-                title: "",
-                description: "",
-                author: "",
-                email: "",
-                publish_date: "",
-                image: "",
-                imageName: "",
-            })
-    );
+    const emptyForm = {
+        title: "",
+        description: "",
+        author: "",
+        email: "",
+        publish_date: "",
+        image: "",
+        imageName: "",
+    };
 
+    const initialData = JSON.parse(
+        localStorage.getItem("formData") || JSON.stringify(emptyForm)
+    );
     const initialCategories = localStorage.getItem("categoriesToSubmit") || "";
 
     const [data, setData] = useState<BlogFormType>(initialData);
     const [categoriesToSubmit, setCategoriesToSubmit] =
         useState<string>(initialCategories);
-    const { categories } = useCategories();
+    const {
+        categories: categoryData,
+        loading,
+        setReFetch,
+    } = useContext(DataContext);
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false);
+    const categories = categoryData?.data;
     const validations = useValidator(data);
 
     const handleChange = (
@@ -56,7 +64,11 @@ const BlogForm: React.FC = () => {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleClose = () => {
+        setIsSubmitted(false);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (isFormValid(data, validations, categoriesToSubmit)) {
@@ -69,25 +81,31 @@ const BlogForm: React.FC = () => {
             }
             formData.append("categories", "[" + categoriesToSubmit + "]");
             formData.append("image", submitImage as File);
-            console.log(formData.get("title"));
-            console.log(data);
-            axios.post(
-                `https://api.blog.redberryinternship.ge/api/blogs`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer 3a346421bef42b8d9a84587ff8430fc6371b1f9d0932211161fdf1c4d49db3f0`,
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
 
-            localStorage.removeItem("formData");
-            localStorage.removeItem("formValidations");
-            localStorage.removeItem("categoriesToSubmit");
-        } else {
-            // Form is not valid, handle accordingly
-            console.log("Form is not valid");
+            try {
+                await axios.post(
+                    `https://api.blog.redberryinternship.ge/api/blogs`,
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer 3a346421bef42b8d9a84587ff8430fc6371b1f9d0932211161fdf1c4d49db3f0`,
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+
+                setSuccess(true);
+                setIsSubmitted(true);
+                setReFetch(true);
+                setData(emptyForm);
+                setCategoriesToSubmit("");
+                localStorage.setItem("formData", JSON.stringify(emptyForm));
+                localStorage.removeItem("formValidations");
+                localStorage.removeItem("categoriesToSubmit");
+            } catch (error) {
+                setIsSubmitted(true);
+                setSuccess(false);
+            }
         }
     };
 
@@ -106,85 +124,107 @@ const BlogForm: React.FC = () => {
     }, []);
 
     return (
-        <section className="blog-form-container">
-            <div className="blog-form">
-                <h1>ბლოგის დამატება</h1>
-                <form onSubmit={handleSubmit}>
-                    <Dropzone onFileUpload={handleFileUpload} />
-                    <div className="blog-form-row">
+        <>
+            <section className="blog-form-container">
+                <div className="blog-form">
+                    <h1>ბლოგის დამატება</h1>
+                    <form onSubmit={handleSubmit}>
+                        <Dropzone onFileUpload={handleFileUpload} />
+                        <div className="blog-form-row">
+                            <Input
+                                onChange={handleChange}
+                                type="text"
+                                label="ავტორი"
+                                required={true}
+                                placeholder="შეიყვანეთ ავტორი"
+                                validation={validations.author}
+                                value={data.author}
+                                name="author"
+                            />
+                            <Input
+                                onChange={handleChange}
+                                type="text"
+                                label="სათაური"
+                                required={true}
+                                placeholder="შეიყვანეთ სათაური"
+                                validation={validations.title}
+                                value={data.title}
+                                name="title"
+                            />
+                        </div>
                         <Input
                             onChange={handleChange}
-                            type="text"
-                            label="ავტორი"
+                            type="textarea"
+                            label="აღწერა"
                             required={true}
-                            placeholder="შეიყვანეთ ავტორი"
-                            validation={validations.author}
-                            value={data.author}
-                            name="author"
+                            placeholder="შეიყვანეთ აღწერა"
+                            validation={validations.description}
+                            value={data.description}
+                            name="description"
                         />
-                        <Input
-                            onChange={handleChange}
-                            type="text"
-                            label="სათაური"
-                            required={true}
-                            placeholder="შეიყვანეთ სათაური"
-                            validation={validations.title}
-                            value={data.title}
-                            name="title"
+                        <div className="blog-form-row">
+                            <Input
+                                onChange={handleChange}
+                                type="date"
+                                label="გამოქვეყნების თარიღი"
+                                required={true}
+                                value={data.publish_date}
+                                name="publish_date"
+                                fail={data.publish_date === ""}
+                            />
+                            {!loading && (
+                                <Select
+                                    categories={categories}
+                                    label="კატეგორია"
+                                    required={true}
+                                    setCategories={setCategoriesToSubmit}
+                                />
+                            )}
+                        </div>
+                        <div className="blog-form-row">
+                            <Input
+                                onChange={handleChange}
+                                type="text"
+                                label="ელ-ფოსტა"
+                                placeholder="Example@redberry.ge"
+                                validation={validations.email}
+                                value={data.email}
+                                name="email"
+                            />
+                        </div>
+                    </form>
+                    <div className="blog-form-button">
+                        <Button
+                            text="გამოქვეყნება"
+                            width="288px"
+                            onClick={handleSubmit}
+                            disabled={
+                                !isFormValid(
+                                    data,
+                                    validations,
+                                    categoriesToSubmit
+                                )
+                            }
                         />
                     </div>
-                    <Input
-                        onChange={handleChange}
-                        type="textarea"
-                        label="აღწერა"
-                        required={true}
-                        placeholder="შეიყვანეთ აღწერა"
-                        validation={validations.description}
-                        value={data.description}
-                        name="description"
-                    />
-                    <div className="blog-form-row">
-                        <Input
-                            onChange={handleChange}
-                            type="date"
-                            label="გამოქვეყნების თარიღი"
-                            required={true}
-                            value={data.publish_date}
-                            name="publish_date"
-                            fail={data.publish_date === ""}
-                        />
-                        <Select
-                            categories={categories}
-                            label="კატეგორია"
-                            required={true}
-                            setCategories={setCategoriesToSubmit}
-                        />
-                    </div>
-                    <div className="blog-form-row">
-                        <Input
-                            onChange={handleChange}
-                            type="text"
-                            label="სათაური"
-                            required={true}
-                            placeholder="Example@redberry.ge"
-                            validation={validations.email}
-                            value={data.email}
-                            name="email"
-                        />
-                    </div>
-                </form>
-                <div className="blog-form-button">
-                    <Button
-                        text="გამოქვეყნება"
-                        width="288px"
-                        onClick={handleSubmit}
-                        disabled={
-                            !isFormValid(data, validations, categoriesToSubmit)
-                        }
-                    />
                 </div>
-            </div>
-        </section>
+            </section>
+            {isSubmitted && (
+                <>
+                    <div className="login-overlay" onClick={handleClose}></div>
+                    <div className="login-container">
+                        <SuccessModal
+                            handleClose={handleClose}
+                            successText="ჩანაწერი წარმატებით დაემატა"
+                            errorText="ფოტოს ზომა აჭარბებს ლიმიტს"
+                            backText="მთავარ გვერდზე დაბრუნება"
+                            success={success}
+                            href="/"
+                        />
+                    </div>
+                </>
+            )}
+        </>
     );
 };
 
@@ -193,8 +233,9 @@ const isFormValid = (
     validations: ValidatorType,
     categories: string
 ) => {
-    const allFieldsFilled = Object.values(data).every((field) => field !== "");
-
+    const allFieldsFilled = Object.entries(data).every(
+        ([key, value]) => key === "email" || value !== ""
+    );
     const allValidationsPassed = Object.values(validations).every(
         (validation) => Object.values(validation).every((isValid) => isValid)
     );

@@ -6,10 +6,9 @@ import "./BlogDetail.scss";
 
 const BlogDetail: React.FC = () => {
     const { id } = useParams<string>();
-    console.log(id);
+
     const { blog, loading, error } = useBlog(id);
 
-    console.log(blog);
     if (loading) return <div>Loading...</div>;
     return (
         <main>
@@ -38,9 +37,17 @@ const BlogDetail: React.FC = () => {
                             size="small"
                         />
                     </div>
-                    <p className="blog-details-description">
-                        {blog.description}
-                    </p>
+                    {blog.description.split("\n").map(
+                        (paragraph, index) =>
+                            paragraph.trim() !== "" && (
+                                <p
+                                    className="blog-details-description"
+                                    key={index}
+                                >
+                                    {paragraph}
+                                </p>
+                            )
+                    )}
                 </div>
             </section>
             <SimilarSlider categories={blog.categories} />

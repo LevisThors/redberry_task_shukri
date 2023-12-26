@@ -6,7 +6,7 @@ import "./CategorySlider.scss";
 import CategorySliderSkeleton from "./CategorySliderSkeleton/CategorySliderSkeleton";
 
 interface CategorySliderProps {
-    categories: CategoryType[];
+    categories: CategoryType[] | null;
     toggleActiveFilter?: any;
     activeFilters?: string[];
     size?: "small" | "large";
@@ -26,6 +26,8 @@ const CategorySlider: React.FC<CategorySliderProps> = ({
     useEffect(() => {
         setWidth(slider.current.scrollWidth - slider.current.offsetWidth);
     }, [categories]);
+
+    if (!categories) return;
 
     return (
         <section
