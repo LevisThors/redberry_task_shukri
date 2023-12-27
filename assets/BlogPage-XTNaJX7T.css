@@ -1,0 +1,1 @@
+.page-header{width:100%;display:flex;justify-content:space-between;align-items:center;margin-block:64px}.page-header h1{color:#1a1a1f;font-size:64px;font-weight:700;line-height:112.5%}.blog{display:grid;grid-template-columns:repeat(3,1fr);grid-gap:32px;grid-row-gap:50px}.blog-container{margin-block:64px;width:100%;display:flex;justify-content:center}
