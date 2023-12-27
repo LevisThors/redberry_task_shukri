@@ -16,6 +16,9 @@ interface InputProps {
     placeholder?: string;
     name: string;
     fail?: boolean;
+    success?: boolean;
+    isLocalStorage?: boolean;
+    cancelValidation?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -29,8 +32,16 @@ const Input: React.FC<InputProps> = ({
     placeholder,
     name,
     fail,
+    success,
+    cancelValidation = false,
 }) => {
-    const savedData = JSON.parse(localStorage.getItem("formData") || "")[name];
+    let savedData = "";
+
+    try {
+        savedData = JSON.parse(localStorage.getItem("formData") || "")[name];
+    } catch (error) {
+        console.log();
+    }
 
     const [touched, setTouched] = useState(false);
     const [emailTouched, setEmailTouched] = useState(false);
@@ -38,7 +49,9 @@ const Input: React.FC<InputProps> = ({
     useEffect(() => {
         savedData && setTouched(true);
         savedData.email && setEmailTouched(true);
-    }, [savedData]);
+
+        success && setTouched(false);
+    }, [savedData, success]);
 
     const handleFocus = () => {
         if (!touched) {
@@ -80,9 +93,11 @@ const Input: React.FC<InputProps> = ({
                     onChange={onChange}
                     onFocus={handleFocus}
                     className={`input ${
-                        touched &&
-                        validation &&
-                        Object.values(validation).some((val) => !val)
+                        cancelValidation
+                            ? ""
+                            : touched &&
+                              validation &&
+                              Object.values(validation).some((val) => !val)
                             ? "input-danger"
                             : touched && "input-success"
                     } ${fail && touched && "input-danger"}
@@ -147,6 +162,7 @@ interface SelectProps {
     required?: boolean;
     categories: CategoryType[];
     setCategories: React.Dispatch<React.SetStateAction<string>>;
+    success?: boolean;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -154,6 +170,7 @@ export const Select: React.FC<SelectProps> = ({
     required,
     categories,
     setCategories,
+    success,
 }) => {
     const [selected, setSelected] = useState<CategoryType[]>([]);
     const [newData, setNewData] = useState<CategoryType[]>(categories);
@@ -197,7 +214,7 @@ export const Select: React.FC<SelectProps> = ({
             )
         );
         savedSelected && setTouched(true);
-    }, [categories]);
+    }, [categories, success]);
 
     return (
         <>

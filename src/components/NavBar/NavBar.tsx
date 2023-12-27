@@ -18,20 +18,20 @@ const NavBar: React.FC = () => {
         localStorage.getItem("isAuthorized") === "true"
     );
 
+    if (!localStorage.getItem("isAuthorized")) {
+        localStorage.setItem("isAuthorized", "false");
+    }
+
     const toggleLoginModal = () =>
         setIsLoginModalOpen((prevState: boolean) => !prevState);
 
     useEffect(() => {
-        const handleStorageChange = () => {
-            setIsAuthorized(localStorage.getItem("isAuthorized") === "true");
-        };
-
-        window.addEventListener("storage", handleStorageChange);
-
-        return () => {
-            window.removeEventListener("storage", handleStorageChange);
-        };
-    }, []);
+        if (localStorage.getItem("isAuthorized") === "true") {
+            setIsAuthorized(true);
+        } else {
+            setIsAuthorized(false);
+        }
+    }, [isLoginModalOpen]);
 
     return (
         <>

@@ -23,7 +23,7 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
 
     useEffect(() => {
         x.onChange((currentX) => {
-            setIsAtLeftEnd(currentX >= 0);
+            setIsAtLeftEnd(currentX >= 0.9);
             setIsAtRightEnd(
                 currentX <=
                     sliderRef.current.offsetWidth -
@@ -33,7 +33,7 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
     }, [x]);
 
     const handleLeftClick = () => {
-        if (!isAtLeftEnd && blogs.length > 3) {
+        if (!isAtLeftEnd) {
             animate(x, x.get() + 415, {
                 type: "spring",
                 stiffness: 500,
@@ -62,19 +62,22 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
                         width={44}
                         height={44}
                         onClick={handleLeftClick}
-                        className={`similar-slider-buttons-active ${
-                            isAtLeftEnd && "similar-slider-buttons-disabled"
-                        }`}
+                        className={
+                            isAtLeftEnd
+                                ? "similar-slider-buttons-disabled"
+                                : "similar-slider-buttons-active"
+                        }
                     />
                     <img
                         src="/assets/icon_arrow_right.svg"
                         width={44}
                         height={44}
                         onClick={handleRightClick}
-                        className={`similar-slider-buttons-active ${
-                            (isAtRightEnd || blogs.length < 4) &&
-                            "similar-slider-buttons-disabled"
-                        }`}
+                        className={
+                            isAtRightEnd || blogs.length < 4
+                                ? "similar-slider-buttons-disabled"
+                                : "similar-slider-buttons-active"
+                        }
                     />
                 </div>
             </div>

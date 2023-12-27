@@ -19,13 +19,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ handleClose }) => {
         setEmail(event.target.value);
     };
 
+    const handleChangeError = (message: string) => {
+        setErrorMessage(message);
+    };
+
     const handleLogin = () => {
         if (!email || email.split("@")[1] !== "redberry.ge") {
             setErrorMessage("მეილი უნდა მთავრდებოდეს @redberry.ge-ით");
-            return;
+        } else {
+            login(email, setShowSuccessModal, handleChangeError);
         }
-
-        login(email, setErrorMessage, setShowSuccessModal);
     };
 
     return (
@@ -34,35 +37,39 @@ const LoginModal: React.FC<LoginModalProps> = ({ handleClose }) => {
             <div className="login-container">
                 {!showSuccessModal ? (
                     <>
-                        <div>
-                            <img
-                                onClick={handleClose}
-                                className="login-close"
-                                src="/assets/icon_close.svg"
-                                width={24}
-                                height={24}
+                        <div className="login-header">
+                            <div className="login-close-container">
+                                <img
+                                    onClick={handleClose}
+                                    className="login-close"
+                                    src="/assets/icon_close.svg"
+                                    width={24}
+                                    height={24}
+                                />
+                            </div>
+                            <h1 className="login-title">შესვლა</h1>
+                        </div>
+                        <div className="login-input">
+                            <Input
+                                name="email"
+                                type="email"
+                                label="ელ-ფოსტა"
+                                value={email}
+                                onChange={handleChange}
+                                error={errorMessage}
+                                placeholder="Example@redberry.ge"
+                                cancelValidation={true}
                             />
                         </div>
-                        <h1 className="login-title">შესვლა</h1>
-                        <Input
-                            name="email"
-                            type="email"
-                            label="ელ-ფოსტა"
-                            value={email}
-                            onChange={handleChange}
-                            error={errorMessage}
-                            placeholder="Example@redberry.ge"
-                        />
-                        <Button
-                            text="შესვლა"
-                            onClick={handleLogin}
-                            disabled={email ? false : true}
-                        />
+                        <div className="login-button-container">
+                            <Button text="შესვლა" onClick={handleLogin} />
+                        </div>
                     </>
                 ) : (
                     <SuccessModal
                         handleClose={handleClose}
                         successText="წარმატებული ავტორიზაცია"
+                        success={true}
                     />
                 )}
             </div>
@@ -87,7 +94,7 @@ export const SuccessModal = ({
 }) => {
     return (
         <>
-            <div>
+            <div className="login-close-container">
                 <img
                     onClick={handleClose}
                     className="login-close"
@@ -128,29 +135,27 @@ export const SuccessModal = ({
 
 const login = (
     email: string,
-    errorSetter: React.Dispatch<React.SetStateAction<string>>,
-    onSuccess: React.Dispatch<React.SetStateAction<boolean>>
+    onSuccess: React.Dispatch<React.SetStateAction<boolean>>,
+    handleChangeError: (message: string) => void
 ) => {
-    try {
-        axios
-            .post("https://api.blog.redberryinternship.ge/api/login", { email })
-            .then(() => {
-                onSuccess(true);
-                localStorage.setItem("isAuthorized", "true");
-            });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-        if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message === "The selected email is invalid."
-        ) {
-            errorSetter("ელ-ფოსტა არ მოიძებნა");
-        } else {
-            errorSetter("სცადეთ მოგვიანებით");
-        }
-        localStorage.setItem("isAuthorized", "false");
-    }
+    axios
+        .post("https://api.blog.redberryinternship.ge/api/login", { email })
+        .then(() => {
+            onSuccess(true);
+            localStorage.setItem("isAuthorized", "true");
+        })
+        .catch((error) => {
+            if (
+                error.response &&
+                error.response.data.message === "The selected email is invalid."
+            ) {
+                handleChangeError("ელ-ფოსტა არ მოიძებნა");
+            } else {
+                handleChangeError("სცადეთ მოგვიანებით");
+            }
+
+            localStorage.setItem("isAuthorized", "false");
+        });
 };
 
 export default LoginModal;

@@ -4,6 +4,16 @@
     flex-direction: column;
     gap: 40px;
 
+    &-page {
+        max-width: 1288px;
+        &-wrapper {
+            margin-bottom: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    }
+
     &-container {
         margin-top: 40px;
         width: 100%;

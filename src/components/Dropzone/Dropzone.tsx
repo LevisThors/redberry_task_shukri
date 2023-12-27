@@ -3,9 +3,15 @@ import "./Dropzone.scss";
 
 interface DropzoneProps {
     onFileUpload: (file: File | null) => void;
+    throwError?: boolean;
+    success?: boolean;
 }
 
-const Dropzone: React.FC<DropzoneProps> = ({ onFileUpload }) => {
+const Dropzone: React.FC<DropzoneProps> = ({
+    onFileUpload,
+    throwError,
+    success,
+}) => {
     const [image, setImage] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -14,13 +20,16 @@ const Dropzone: React.FC<DropzoneProps> = ({ onFileUpload }) => {
     useEffect(() => {
         const storedData = JSON.parse(localStorage.getItem("formData") || "{}");
 
-        if (storedData.image) {
+        if (storedData.image !== "") {
             setImage(storedData.image);
             setFileName(storedData.imageName);
         } else {
-            setError("ფაილი არ არის არჩეული. გთხოვთ ატვირთეთ ფოტო.");
+            setImage(null);
+            setFileName(null);
+            throwError &&
+                setError("ფაილი არ არის არჩეული. გთხოვთ ატვირთეთ ფოტო.");
         }
-    }, []);
+    }, [success, throwError]);
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();

@@ -11,21 +11,25 @@ import { SuccessModal } from "../../components/LoginModal/LoginModal";
 import axios from "axios";
 import "./BlogForm.scss";
 
-const BlogForm: React.FC = () => {
-    const emptyForm = {
-        title: "",
-        description: "",
-        author: "",
-        email: "",
-        publish_date: "",
-        image: "",
-        imageName: "",
-    };
+const emptyForm = {
+    title: "",
+    description: "",
+    author: "",
+    email: "",
+    publish_date: "",
+    image: "",
+    imageName: "",
+};
 
+const BlogForm: React.FC = () => {
     const initialData = JSON.parse(
         localStorage.getItem("formData") || JSON.stringify(emptyForm)
     );
     const initialCategories = localStorage.getItem("categoriesToSubmit") || "";
+
+    const throwError =
+        Object.values(initialData).some((value) => value !== "") ||
+        initialCategories !== "";
 
     const [data, setData] = useState<BlogFormType>(initialData);
     const [categoriesToSubmit, setCategoriesToSubmit] =
@@ -99,9 +103,7 @@ const BlogForm: React.FC = () => {
                 setReFetch(true);
                 setData(emptyForm);
                 setCategoriesToSubmit("");
-                localStorage.setItem("formData", JSON.stringify(emptyForm));
-                localStorage.removeItem("formValidations");
-                localStorage.removeItem("categoriesToSubmit");
+                clearLocalStorage();
             } catch (error) {
                 setIsSubmitted(true);
                 setSuccess(false);
@@ -110,9 +112,7 @@ const BlogForm: React.FC = () => {
     };
 
     useEffect(() => {
-        localStorage.setItem("formData", JSON.stringify(data));
-        localStorage.setItem("formValidations", JSON.stringify(validations));
-        localStorage.setItem("categoriesToSubmit", categoriesToSubmit);
+        setLocalStorage(data, validations, categoriesToSubmit);
     }, [data, validations, categoriesToSubmit]);
 
     useEffect(() => {
@@ -129,7 +129,11 @@ const BlogForm: React.FC = () => {
                 <div className="blog-form">
                     <h1>ბლოგის დამატება</h1>
                     <form onSubmit={handleSubmit}>
-                        <Dropzone onFileUpload={handleFileUpload} />
+                        <Dropzone
+                            onFileUpload={handleFileUpload}
+                            throwError={throwError}
+                            success={success}
+                        />
                         <div className="blog-form-row">
                             <Input
                                 onChange={handleChange}
@@ -178,6 +182,7 @@ const BlogForm: React.FC = () => {
                                     label="კატეგორია"
                                     required={true}
                                     setCategories={setCategoriesToSubmit}
+                                    success={success}
                                 />
                             )}
                         </div>
@@ -243,6 +248,22 @@ const isFormValid = (
     const categoriesPresent = categories !== "";
 
     return allFieldsFilled && allValidationsPassed && categoriesPresent;
+};
+
+const setLocalStorage = (
+    data: BlogFormType,
+    validations: ValidatorType,
+    categories: string
+) => {
+    localStorage.setItem("formData", JSON.stringify(data));
+    localStorage.setItem("formValidations", JSON.stringify(validations));
+    localStorage.setItem("categoriesToSubmit", categories);
+};
+
+const clearLocalStorage = () => {
+    localStorage.setItem("formData", JSON.stringify(emptyForm));
+    localStorage.removeItem("formValidations");
+    localStorage.removeItem("categoriesToSubmit");
 };
 
 export default BlogForm;

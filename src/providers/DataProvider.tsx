@@ -3,8 +3,9 @@ import axios from "axios";
 import { DataContext } from "./DataContext";
 import { CategoryType } from "../types/CategoryType";
 import { BlogType } from "../types/BlogType";
+import { DataContextType } from "../types/DataContextType";
 
-export const DataProvider = ({ children }) => {
+export const DataProvider: React.FC<DataContextType> = ({ children }) => {
     const [categories, setCategories] = useState<CategoryType | null>();
     const [blogs, setBlogs] = useState<BlogType | null>();
     const [loading, setLoading] = useState(true);

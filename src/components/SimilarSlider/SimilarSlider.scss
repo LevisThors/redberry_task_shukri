@@ -35,6 +35,8 @@
 
         &-disabled {
             background-color: #e4e3eb;
+            border-radius: 50px;
+            transition: all 0.2s ease-in-out;
 
             &:hover {
                 background-color: #d9d8e0;

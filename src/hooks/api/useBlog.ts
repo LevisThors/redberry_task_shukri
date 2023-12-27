@@ -8,7 +8,6 @@ export const useBlog = (id: string | undefined) => {
     const [error, setError] = useState<unknown>(null);
 
     useEffect(() => {
-        console.log("hook ", id);
         const getBlogById = async () => {
             try {
                 const response = await axios.get(
