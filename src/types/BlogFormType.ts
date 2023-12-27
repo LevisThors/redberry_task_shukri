@@ -6,4 +6,5 @@ export interface BlogFormType {
     publish_date: string;
     image: string;
     imageName: string;
+    [key: string]: any;
 }

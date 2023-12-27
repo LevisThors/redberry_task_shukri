@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { DataContext } from "./DataContext";
-import { CategoryType } from "../types/CategoryType";
-import { BlogType } from "../types/BlogType";
+import { CategoryTypeResponse } from "../types/CategoryType";
+import { BlogTypeResponse } from "../types/BlogType";
 import { DataContextType } from "../types/DataContextType";
 
 export const DataProvider: React.FC<DataContextType> = ({ children }) => {
-    const [categories, setCategories] = useState<CategoryType | null>();
-    const [blogs, setBlogs] = useState<BlogType | null>();
+    const [categories, setCategories] = useState<CategoryTypeResponse>();
+    const [blogs, setBlogs] = useState<BlogTypeResponse | undefined>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<unknown>(null);
     const [reFetch, setReFetch] = useState(false);

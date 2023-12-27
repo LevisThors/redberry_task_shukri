@@ -18,17 +18,19 @@ const SimilarSlider: React.FC<SimilarSliderProps> = ({ categories }) => {
     const { blogs, loading, error } = useFilteredBlogs(categoryIds);
     const [isAtLeftEnd, setIsAtLeftEnd] = useState(true);
     const [isAtRightEnd, setIsAtRightEnd] = useState(false);
-    const sliderRef = useRef(null);
+    const sliderRef = useRef<HTMLDivElement>(null);
     const x = useMotionValue(0);
 
     useEffect(() => {
         x.onChange((currentX) => {
             setIsAtLeftEnd(currentX >= 0.9);
-            setIsAtRightEnd(
-                currentX <=
-                    sliderRef.current.offsetWidth -
-                        sliderRef.current.scrollWidth
-            );
+            if (sliderRef.current) {
+                setIsAtRightEnd(
+                    currentX <=
+                        sliderRef.current.offsetWidth -
+                            sliderRef.current.scrollWidth
+                );
+            }
         });
     }, [x]);
 

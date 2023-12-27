@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
     success,
     cancelValidation = false,
 }) => {
-    let savedData = "";
+    let savedData: any;
 
     try {
         savedData = JSON.parse(localStorage.getItem("formData") || "")[name];
@@ -48,7 +48,11 @@ const Input: React.FC<InputProps> = ({
 
     useEffect(() => {
         savedData && setTouched(true);
-        savedData.email && setEmailTouched(true);
+        try {
+            savedData.email && setEmailTouched(true);
+        } catch {
+            console.log();
+        }
 
         success && setTouched(false);
     }, [savedData, success]);

@@ -7,4 +7,5 @@ export default defineConfig({
     optimizeDeps: {
         exclude: ["js-big-decimal"],
     },
+    base: "/redberry_task_shukri/",
 });

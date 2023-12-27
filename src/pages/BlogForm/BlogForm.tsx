@@ -34,11 +34,13 @@ const BlogForm: React.FC = () => {
     const [data, setData] = useState<BlogFormType>(initialData);
     const [categoriesToSubmit, setCategoriesToSubmit] =
         useState<string>(initialCategories);
-    const {
-        categories: categoryData,
-        loading,
-        setReFetch,
-    } = useContext(DataContext);
+    const dataContextValue = useContext(DataContext);
+
+    if (!dataContextValue) {
+        throw new Error("useFilteredBlogs must be used within a DataProvider");
+    }
+    const { categories: categoryData, loading, setReFetch } = dataContextValue;
+
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
     const categories = categoryData?.data;
@@ -178,7 +180,7 @@ const BlogForm: React.FC = () => {
                             />
                             {!loading && (
                                 <Select
-                                    categories={categories}
+                                    categories={categories ? categories : []}
                                     label="კატეგორია"
                                     required={true}
                                     setCategories={setCategoriesToSubmit}

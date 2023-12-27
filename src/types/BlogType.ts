@@ -10,3 +10,7 @@ export interface BlogType {
     author: string;
     email: string;
 }
+
+export interface BlogTypeResponse {
+    data: BlogType[];
+}

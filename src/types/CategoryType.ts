@@ -4,3 +4,7 @@ export interface CategoryType {
     text_color: string;
     background_color: string;
 }
+
+export interface CategoryTypeResponse {
+    data: CategoryType[];
+}

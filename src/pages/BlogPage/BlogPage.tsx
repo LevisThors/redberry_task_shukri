@@ -13,13 +13,18 @@ const BlogPage: React.FC = () => {
         ? JSON.parse(localStorage.getItem("activeFilter")!)
         : [];
     const [activeFilter, setActiveFilter] = useState<string[]>(initialFilter);
+    const dataContextValue = useContext(DataContext);
 
-    const { categories: categoryData } = useContext(DataContext);
+    if (!dataContextValue) {
+        throw new Error("useFilteredBlogs must be used within a DataProvider");
+    }
+
+    const { categories: categoryData } = dataContextValue;
     const categories = categoryData?.data;
 
     const { blogs, loading } = useFilteredBlogs(activeFilter);
 
-    const toggleActiveFilter = (e) => {
+    const toggleActiveFilter = (e: any) => {
         const { name } = e.target;
 
         setActiveFilter((prev) => {
@@ -45,7 +50,7 @@ const BlogPage: React.FC = () => {
                 <CategorySliderSkeleton />
             ) : (
                 <CategorySlider
-                    categories={categories}
+                    categories={categories ? categories : []}
                     activeFilters={activeFilter}
                     toggleActiveFilter={toggleActiveFilter}
                 />
