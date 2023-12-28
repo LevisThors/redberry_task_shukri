@@ -29,7 +29,9 @@ const BlogDetail: React.FC = () => {
                                             .toLocaleDateString("en-GB")
                                             .replace(/\//g, ".")}
                                     </span>
-                                    <span>{" • " + blog.email}</span>
+                                    <span>
+                                        {blog.email && " • " + blog.email}
+                                    </span>
                                 </div>
                             </div>
                             <h1>{blog.title}</h1>
